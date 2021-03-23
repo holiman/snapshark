@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -151,6 +152,16 @@ func filter(dump, index *os.File, matchFn func(snap.Packet) bool, outCh chan sna
 var snapSize = uint64(0)
 
 func writePacket(snapDump, snapIndex *os.File, packet snap.Packet) {
+
+	// Export the data into some user consumable thing
+	blob, err := json.MarshalIndent(packet, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	snapDump.Write(blob)
+}
+func writePacketBinary(snapDump, snapIndex *os.File, packet snap.Packet) {
+
 	blob, _ := rlp.EncodeToBytes(packet)
 	if _, err := snapDump.Write(blob); err != nil {
 		fmt.Printf("Failed to write packet into dump, err %v\n", err)
