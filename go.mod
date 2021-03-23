@@ -1,4 +1,4 @@
-module github.com/holiman/bisect
+module github.com/holiman/snapshark
 
 go 1.15
 
