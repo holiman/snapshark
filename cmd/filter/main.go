@@ -115,7 +115,7 @@ func filter(dump, index *os.File, matchFn func(snap.Packet) bool, outCh chan sna
 		pos  = int64(0)
 		blob = make([]byte, 8)
 	)
-	for {
+	for pos := int64(0); ; pos++ {
 		_, err := index.ReadAt(blob, pos*17)
 		if err != nil {
 			break
