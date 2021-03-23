@@ -37,13 +37,13 @@ func main() {
 		panic("no hash")
 	}
 
-	outdump, err := os.Open(os.Args[4])
+	outdump, err := os.Create(os.Args[4])
 	if err != nil {
 		panic(err)
 	}
 	defer outdump.Close()
 
-	outindex, err := os.Open(os.Args[5])
+	outindex, err := os.Create(os.Args[5])
 	if err != nil {
 		panic(err)
 	}
