@@ -16,34 +16,34 @@ import (
 
 func main() {
 	// Parse the command line flags
-	if len(os.Args) < 6 {
-		fmt.Println("Usage: filter /path/to/snap.dump /path/to/snap.index hexdata /path/to/output.dump /path/to/output.index")
+	if len(os.Args) < 4 {
+		fmt.Println("Usage: filter /path/to/dump hexdata /path/to/output")
 		return
 	}
-	dump, err := os.Open(os.Args[1])
+	dump, err := os.Open(fmt.Sprintf("%v.dump", os.Args[1]))
 	if err != nil {
 		panic(err)
 	}
 	defer dump.Close()
 
-	index, err := os.Open(os.Args[2])
+	index, err := os.Open(fmt.Sprintf("%v.index", os.Args[1]))
 	if err != nil {
 		panic(err)
 	}
 	defer index.Close()
 
-	h := common.HexToHash(os.Args[3])
+	h := common.HexToHash(os.Args[2])
 	if h == (common.Hash{}) {
 		panic("no hash")
 	}
 
-	outdump, err := os.Create(os.Args[4])
+	outdump, err := os.Create(fmt.Sprintf("%v.dump", os.Args[3]))
 	if err != nil {
 		panic(err)
 	}
 	defer outdump.Close()
 
-	outindex, err := os.Create(os.Args[5])
+	outindex, err := os.Create(fmt.Sprintf("%v.index", os.Args[3]))
 	if err != nil {
 		panic(err)
 	}
@@ -112,7 +112,6 @@ func makeMatcher(root common.Hash) func(snap.Packet) bool {
 func filter(dump, index *os.File, matchFn func(snap.Packet) bool, outCh chan snap.Packet) {
 
 	var (
-		pos  = int64(0)
 		blob = make([]byte, 8)
 	)
 	for pos := int64(0); ; pos++ {
